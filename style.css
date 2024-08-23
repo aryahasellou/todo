@@ -5,7 +5,7 @@ body {
     color: #333;
     margin: 0;
     padding: 0;
-    user-select: none; /* Verhindert die Markierung von Text auf mobilen Geräten */
+    user-select: none;
 }
 
 .container {
@@ -105,92 +105,46 @@ h2 {
     transform: rotate(180deg);
 }
 
-/* Emoji-Animationen */
-.rotating-emoji {
-    display: inline-block;
-    animation: rotate 2s infinite linear;
-}
-
-/* Emojis, die erscheinen */
-.appearing-emoji {
-    font-size: 1.5em;
-    display: inline-block;
-    margin-left: 10px;
-    animation: appear 0.5s ease-in-out;
-}
-
 /* XP-Leiste */
 .xp-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
     height: 20px;
-    background-color: #d2d8ef;
+    border: 2px solid #4A90E2;
     border-radius: 10px;
-    margin: 10px 0;
-    position: relative;
     overflow: hidden;
 }
 
-.xp-bar span {
-    display: block;
+.xp-bar-inner {
     height: 100%;
-    background-color: #4A90E2;
-    width: 0;
-    transition: width 0.5s;
+    transition: width 0.3s ease;
 }
 
-/* Dark Mode */
+/* Dark Mode Styling */
 body.dark-mode {
     background-color: #333;
     color: #f0f0f0;
 }
 
 body.dark-mode .task-table div {
-    background-color: #444;
-    color: #f0f0f0;
+    background-color: #555;
 }
 
 body.dark-mode .task-entry input[type="text"] {
-    border-color: #555;
-    background-color: #666;
-    color: #f0f0f0;
+    background-color: #444;
+    border: 1px solid #666;
 }
 
 body.dark-mode .task-entry button {
-    background-color: #555;
+    background-color: #666;
 }
 
 body.dark-mode .task-entry button:hover {
-    background-color: #444;
-}
-
-header button#toggle-darkmode {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: #333;
-    color: #f0f0f0;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-header button#toggle-darkmode:hover {
     background-color: #555;
 }
 
-/* Sucheingabe */
-#search-input {
-    padding: 10px;
-    width: 100%;
-    max-width: 300px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-}
-
-/* Flexibles Layout */
+/* Responsive Design */
 @media (max-width: 768px) {
     .task-lists {
         flex-direction: column;
@@ -201,8 +155,28 @@ header button#toggle-darkmode:hover {
         margin-bottom: 20px;
     }
 
-    /* Anpassung für mobile Interaktion */
     .task-table div {
         cursor: pointer;
+    }
+}
+
+/* Animations */
+@keyframes slide-in-bottom {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes text-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
     }
 }

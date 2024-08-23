@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const taskPool = document.getElementById('task-pool');
     const aryaTasks = document.getElementById('arya-tasks');
     const aleynaTasks = document.getElementById('aleyna-tasks');
+    let selectedTask = null;
 
     // Aufgaben von Firebase laden
     loadTasks('taskPool', taskPool);
@@ -53,10 +54,11 @@ document.addEventListener('DOMContentLoaded', function () {
         // Event Listener für Löschen
         deleteBtn.addEventListener('click', function () {
             newTaskDiv.remove();
+            removeTaskFromFirebase(newTaskDiv); // Entferne die Aufgabe auch aus Firebase
         });
 
         // Mobile: Tap and Move
-        if (isMobile) {
+        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
             newTaskDiv.addEventListener('click', function () {
                 if (selectedTask) {
                     selectedTask.classList.remove('selected-task');
@@ -91,11 +93,12 @@ document.addEventListener('DOMContentLoaded', function () {
             dropTask(e, zone.id);
         });
 
-        if (isMobile) {
+        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
             zone.addEventListener('click', function () {
                 if (selectedTask) {
                     zone.appendChild(selectedTask);
                     selectedTask.classList.remove('selected-task');
+                    saveTask(zone.id, selectedTask.textContent); // Speichere die Aufgabe in Firebase
                     selectedTask = null;
                 }
             });
@@ -118,6 +121,20 @@ document.addEventListener('DOMContentLoaded', function () {
     function saveTask(zone, taskText) {
         const tasksRef = db.ref(zone);
         tasksRef.push(taskText);
+    }
+
+    // Aufgabe aus Firebase entfernen
+    function removeTaskFromFirebase(taskElement) {
+        const taskText = taskElement.textContent.replace('❌', '').trim();
+        const zoneId = taskElement.parentElement.id;
+        const tasksRef = db.ref(zoneId);
+        tasksRef.once('value', function(snapshot) {
+            snapshot.forEach(function(childSnapshot) {
+                if (childSnapshot.val() === taskText) {
+                    tasksRef.child(childSnapshot.key).remove();
+                }
+            });
+        });
     }
 
     // Aufgaben aus Firebase laden

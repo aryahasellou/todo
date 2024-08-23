@@ -5,33 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To-Do Liste</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"></script>
 </head>
 <body>
-    <header>
-        <h1>Meine To-Do Liste</h1>
-        <button id="toggle-darkmode">🌙</button>
-    </header>
     <div class="container">
+        <header>
+            <h1>To-Do Liste</h1>
+        </header>
         <div class="task-entry">
-            <input type="text" id="new-task" placeholder="Neue Aufgabe hinzufügen...">
+            <input type="text" id="new-task" placeholder="Neue Aufgabe">
             <button id="add-task">Hinzufügen</button>
         </div>
         <div class="task-lists">
-            <div class="task-table" id="task-pool">
+            <div id="task-pool" class="task-table">
                 <h2>Task Pool</h2>
             </div>
-            <div class="task-table" id="arya-tasks">
-                <h2>Aryas Aufgaben</h2>
-                <div class="xp-bar" id="arya-xp-bar"><span></span></div>
+            <div id="arya-tasks" class="task-table">
+                <h2>Aufgaben von Arya</h2>
             </div>
-            <div class="task-table" id="aleyna-tasks">
-                <h2>Aleyas Aufgaben</h2>
-                <div class="xp-bar" id="aleyna-xp-bar"><span></span></div>
+            <div id="aleyna-tasks" class="task-table">
+                <h2>Aufgaben von Aleyna</h2>
             </div>
         </div>
-        <input type="text" id="search-input" placeholder="Aufgaben suchen...">
+        <div class="search">
+            <input type="text" id="search-input" placeholder="Suche Aufgaben...">
+        </div>
+        <div id="xp-bar" class="xp-bar">
+            <div id="arya-xp" class="xp-bar-inner"></div>
+            <div id="aleyna-xp" class="xp-bar-inner"></div>
+        </div>
+        <button id="dark-mode-toggle">Dark Mode</button>
     </div>
     <script src="script.js"></script>
 </body>

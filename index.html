@@ -3,16 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meine To-Do Liste</title>
-    <link rel="stylesheet" href="styles/style.css">
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-database.js"></script>
+    <title>To-Do Liste</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Meine To-Do Liste</h1>
+            <h1>To-Do Liste</h1>
         </header>
         
         <div class="task-entry">
@@ -20,13 +17,31 @@
             <button id="add-task">Hinzufügen</button>
         </div>
 
+        <div class="task-search">
+            <input type="text" id="task-search" placeholder="Aufgaben suchen...">
+        </div>
+
         <div class="task-lists">
-            <div id="task-pool" class="task-table">Task Pool</div>
-            <div id="arya-tasks" class="task-table">Arya's Tasks</div>
-            <div id="aleyna-tasks" class="task-table">Aleyna's Tasks</div>
+            <div class="task-table" id="task-pool">
+                <h2>Task Pool</h2>
+            </div>
+            <div class="task-table" id="arya-tasks">
+                <h2>Arya's Aufgaben</h2>
+                <div class="xp-bar" id="arya-xp-bar"></div>
+            </div>
+            <div class="task-table" id="aleyna-tasks">
+                <h2>Aleyna's Aufgaben</h2>
+                <div class="xp-bar" id="aleyna-xp-bar"></div>
+            </div>
+        </div>
+
+        <div class="dark-mode-switch">
+            <label for="dark-mode-switch">Dark Mode:</label>
+            <input type="checkbox" id="dark-mode-switch">
         </div>
     </div>
-
-    <script src="scripts/app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"></script>
+    <script src="scripts.js"></script>
 </body>
 </html>

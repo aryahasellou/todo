@@ -6,12 +6,6 @@ body {
     margin: 0;
     padding: 0;
     user-select: none; /* Verhindert die Markierung von Text auf mobilen Geräten */
-    transition: background-color 0.3s, color 0.3s;
-}
-
-body.dark-mode {
-    background-color: #333;
-    color: #f0f0f0;
 }
 
 .container {
@@ -72,22 +66,6 @@ h2 {
     background-color: #357ABD;
 }
 
-/* Suchfeld */
-.task-search {
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: center;
-}
-
-.task-search input[type="text"] {
-    padding: 10px;
-    font-size: 1em;
-    width: 60%;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
 /* Aufgaben-Elemente */
 .task-table div {
     padding: 10px;
@@ -127,60 +105,89 @@ h2 {
     transform: rotate(180deg);
 }
 
+/* Emoji-Animationen */
+.rotating-emoji {
+    display: inline-block;
+    animation: rotate 2s infinite linear;
+}
+
+/* Emojis, die erscheinen */
+.appearing-emoji {
+    font-size: 1.5em;
+    display: inline-block;
+    margin-left: 10px;
+    animation: appear 0.5s ease-in-out;
+}
+
 /* XP-Leiste */
 .xp-bar {
     height: 20px;
-    background-color: #ddd;
+    background-color: #d2d8ef;
     border-radius: 10px;
-    margin-top: 10px;
+    margin: 10px 0;
     position: relative;
+    overflow: hidden;
 }
 
-.xp-bar:before {
-    content: 'XP';
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 0 5px;
-    color: #fff;
-    font-weight: bold;
+.xp-bar span {
+    display: block;
+    height: 100%;
     background-color: #4A90E2;
-    border-radius: 10px 0 0 10px;
+    width: 0;
+    transition: width 0.5s;
 }
 
 /* Dark Mode */
-.dark-mode .task-table div {
+body.dark-mode {
     background-color: #333;
     color: #f0f0f0;
 }
 
-.dark-mode .task-entry input[type="text"], 
-.dark-mode .task-entry button, 
-.dark-mode .task-search input[type="text"] {
-    background-color: #555;
+body.dark-mode .task-table div {
+    background-color: #444;
     color: #f0f0f0;
-    border-color: #777;
 }
 
-/* Emojis für Konfetti und Rakete */
-.confetti {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2em;
-    z-index: 9999;
-    pointer-events: none;
+body.dark-mode .task-entry input[type="text"] {
+    border-color: #555;
+    background-color: #666;
+    color: #f0f0f0;
 }
 
-.rocket {
-    position: fixed;
-    top: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 3em;
-    z-index: 9999;
-    pointer-events: none;
+body.dark-mode .task-entry button {
+    background-color: #555;
+}
+
+body.dark-mode .task-entry button:hover {
+    background-color: #444;
+}
+
+header button#toggle-darkmode {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #333;
+    color: #f0f0f0;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+header button#toggle-darkmode:hover {
+    background-color: #555;
+}
+
+/* Sucheingabe */
+#search-input {
+    padding: 10px;
+    width: 100%;
+    max-width: 300px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
 }
 
 /* Flexibles Layout */
@@ -197,46 +204,5 @@ h2 {
     /* Anpassung für mobile Interaktion */
     .task-table div {
         cursor: pointer;
-    }
-}
-
-/* Keyframe-Animationen */
-@keyframes slide-in-bottom {
-    from {
-        transform: translateY(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-@keyframes text-fade-in {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes rotate {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes appear {
-    from {
-        opacity: 0;
-        transform: scale(0);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
     }
 }

@@ -4,18 +4,51 @@ document.addEventListener('DOMContentLoaded', function () {
     const taskPool = document.getElementById('task-pool');
 
     addTaskButton.addEventListener('click', function () {
-        console.log("Hinzufügen-Button geklickt");
         const taskText = newTaskInput.value.trim();
         if (taskText) {
-            const newTaskDiv = document.createElement('div');
-            newTaskDiv.textContent = taskText;
-            newTaskDiv.draggable = true;
-            newTaskDiv.addEventListener('dragstart', dragStart);
-            newTaskDiv.addEventListener('dragend', dragEnd);
+            const newTaskDiv = createTaskElement(taskText);
             taskPool.appendChild(newTaskDiv);
             newTaskInput.value = '';
         }
     });
+
+    function createTaskElement(taskText) {
+        const newTaskDiv = document.createElement('div');
+        newTaskDiv.textContent = taskText;
+
+        // Checkbox zum Markieren
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        newTaskDiv.prepend(checkbox);
+
+        // Löschen-Button
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'X';
+        deleteBtn.classList.add('delete-btn');
+        newTaskDiv.appendChild(deleteBtn);
+
+        // Event Listener für Drag & Drop
+        newTaskDiv.draggable = true;
+        newTaskDiv.addEventListener('dragstart', dragStart);
+        newTaskDiv.addEventListener('dragend', dragEnd);
+
+        // Event Listener für Löschen
+        deleteBtn.addEventListener('click', function () {
+            newTaskDiv.remove();
+        });
+
+        // Priorität setzen (Optional)
+        const priority = prompt("Priorität eingeben: hoch, mittel, niedrig").toLowerCase();
+        if (priority === 'hoch') {
+            newTaskDiv.classList.add('high-priority');
+        } else if (priority === 'mittel') {
+            newTaskDiv.classList.add('medium-priority');
+        } else {
+            newTaskDiv.classList.add('low-priority');
+        }
+
+        return newTaskDiv;
+    }
 
     const tasks = document.querySelectorAll('.task-table div, .priority-table div, .pool-table div');
     const dropzones = document.querySelectorAll('.task-table, .priority-table, .pool-table');
@@ -33,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function dragStart(e) {
         this.classList.add('dragging');
-        e.dataTransfer.setData('text/plain', e.target.id);
+        e.dataTransfer.setData('text/plain', e.target.textContent);
     }
 
     function dragEnd() {
@@ -46,8 +79,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function dropTask(e) {
         e.preventDefault();
-        const id = e.dataTransfer.getData('text/plain');
-        const draggable = document.getElementById(id);
-        this.appendChild(draggable);
+        const taskText = e.dataTransfer.getData('text/plain');
+        const newTaskDiv = createTaskElement(taskText);
+        this.appendChild(newTaskDiv);
     }
 });

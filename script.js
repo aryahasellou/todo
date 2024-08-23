@@ -103,4 +103,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function addRotatingEmoji(taskElement) {
         const emojis = ['🍣', '🍜', '🇯🇵'];
-        const random
+        const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+        const emojiSpan = document.createElement('span');
+        emojiSpan.textContent = randomEmoji;
+        emojiSpan.classList.add('rotating-emoji');
+        taskElement.appendChild(emojiSpan);
+    }
+});

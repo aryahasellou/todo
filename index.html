@@ -4,37 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To-Do Liste</title>
-    <link rel="stylesheet" href="styles.css"> <!-- CSS-Datei verknüpfen -->
+    <link rel="stylesheet" href="styles.css"> <!-- Pfad zur CSS-Datei -->
 </head>
 <body>
+    <header>
+        <h1>Meine To-Do Liste</h1>
+    </header>
     <div class="container">
-        <header>
-            <h1>To-Do Liste</h1>
-        </header>
         <div class="task-entry">
-            <input type="text" id="new-task" placeholder="Neue Aufgabe">
+            <input type="text" id="new-task" placeholder="Neue Aufgabe eingeben">
             <button id="add-task">Hinzufügen</button>
         </div>
+        <div class="search-bar">
+            <input type="text" id="search" placeholder="Suche Aufgaben...">
+        </div>
         <div class="task-lists">
-            <div id="task-pool" class="task-table">
+            <div class="task-table" id="task-pool">
                 <h2>Task Pool</h2>
             </div>
-            <div id="arya-tasks" class="task-table">
+            <div class="task-table" id="arya-tasks">
                 <h2>Aufgaben von Arya</h2>
             </div>
-            <div id="aleyna-tasks" class="task-table">
+            <div class="task-table" id="aleyna-tasks">
                 <h2>Aufgaben von Aleyna</h2>
             </div>
         </div>
-        <div class="search">
-            <input type="text" id="search-input" placeholder="Suche Aufgaben...">
-        </div>
-        <div id="xp-bar" class="xp-bar">
-            <div id="arya-xp" class="xp-bar-inner"></div>
-            <div id="aleyna-xp" class="xp-bar-inner"></div>
-        </div>
-        <button id="dark-mode-toggle">Dark Mode</button>
     </div>
-    <script src="script.js"></script> <!-- JavaScript-Datei verknüpfen -->
+    <button id="toggle-darkmode">Dark Mode</button>
+    <script src="script.js"></script> <!-- Pfad zur JavaScript-Datei -->
 </body>
 </html>

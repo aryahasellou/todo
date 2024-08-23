@@ -6,6 +6,12 @@ body {
     margin: 0;
     padding: 0;
     user-select: none; /* Verhindert die Markierung von Text auf mobilen Geräten */
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode {
+    background-color: #333;
+    color: #f0f0f0;
 }
 
 .container {
@@ -66,8 +72,24 @@ h2 {
     background-color: #357ABD;
 }
 
+/* Suchfeld */
+.task-search {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.task-search input[type="text"] {
+    padding: 10px;
+    font-size: 1em;
+    width: 60%;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 /* Aufgaben-Elemente */
-.task-table div, .priority-table div, .pool-table div {
+.task-table div {
     padding: 10px;
     margin-bottom: 5px;
     background-color: #e0e4f1;
@@ -81,14 +103,14 @@ h2 {
     animation: slide-in-bottom 0.5s ease-in-out;
 }
 
-.task-table div:hover, .priority-table div:hover, .pool-table div:hover {
+.task-table div:hover {
     transform: scale(1.05);
     background-color: #d2d8ef;
     box-shadow: 0 8px 10px rgba(0, 0, 0, 0.15);
 }
 
 /* Checkbox und Löschen-Button */
-.task-table input[type="checkbox"], .priority-table input[type="checkbox"], .pool-table input[type="checkbox"] {
+.task-table input[type="checkbox"] {
     margin-right: 10px;
 }
 
@@ -105,18 +127,77 @@ h2 {
     transform: rotate(180deg);
 }
 
-/* Emoji-Animationen */
-.rotating-emoji {
-    display: inline-block;
-    animation: rotate 2s infinite linear;
+/* XP-Leiste */
+.xp-bar {
+    height: 20px;
+    background-color: #ddd;
+    border-radius: 10px;
+    margin-top: 10px;
+    position: relative;
 }
 
-/* Emojis, die erscheinen */
-.appearing-emoji {
-    font-size: 1.5em;
-    display: inline-block;
-    margin-left: 10px;
-    animation: appear 0.5s ease-in-out;
+.xp-bar:before {
+    content: 'XP';
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0 5px;
+    color: #fff;
+    font-weight: bold;
+    background-color: #4A90E2;
+    border-radius: 10px 0 0 10px;
+}
+
+/* Dark Mode */
+.dark-mode .task-table div {
+    background-color: #333;
+    color: #f0f0f0;
+}
+
+.dark-mode .task-entry input[type="text"], 
+.dark-mode .task-entry button, 
+.dark-mode .task-search input[type="text"] {
+    background-color: #555;
+    color: #f0f0f0;
+    border-color: #777;
+}
+
+/* Emojis für Konfetti und Rakete */
+.confetti {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2em;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.rocket {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 3em;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+/* Flexibles Layout */
+@media (max-width: 768px) {
+    .task-lists {
+        flex-direction: column;
+    }
+
+    .day-planner {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    /* Anpassung für mobile Interaktion */
+    .task-table div {
+        cursor: pointer;
+    }
 }
 
 /* Keyframe-Animationen */
@@ -158,53 +239,4 @@ h2 {
         opacity: 1;
         transform: scale(1);
     }
-}
-
-/* Flexibles Layout */
-@media (max-width: 768px) {
-    .task-lists {
-        flex-direction: column;
-    }
-
-    .day-planner {
-        width: 100%;
-        margin-bottom: 20px;
-    }
-
-    /* Anpassung für mobile Interaktion */
-    .task-table div, .priority-table div, .pool-table div {
-        cursor: pointer;
-    }
-}
-
-/* Zusätzliche Klassen für mobile Interaktion */
-.selected-task {
-    outline: 2px solid #4A90E2;
-    background-color: #e0f7fa;
-}
-
-/* Bereichspezifische Farben */
-#arya-tasks {
-    background-color: #d0f0d0; /* Hellgrün für Arya */
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-#aleyna-tasks {
-    background-color: #fcd0fc; /* Hellpink für Aleyna */
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Feuerwerk-Animation */
-.completed-task-rocket {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 3em;
-    z-index: 1000;
-    animation: appear 0.5s ease-in-out;
 }

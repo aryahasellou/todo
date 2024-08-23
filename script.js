@@ -21,16 +21,11 @@ document.addEventListener('DOMContentLoaded', function () {
         checkbox.type = 'checkbox';
         newTaskDiv.prepend(checkbox);
 
-        // Löschen-Button
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = 'X';
+        // Löschen-Button als Icon
+        const deleteBtn = document.createElement('span');
+        deleteBtn.textContent = '❌';
         deleteBtn.classList.add('delete-btn');
         newTaskDiv.appendChild(deleteBtn);
-
-        // Event Listener für Drag & Drop
-        newTaskDiv.draggable = true;
-        newTaskDiv.addEventListener('dragstart', dragStart);
-        newTaskDiv.addEventListener('dragend', dragEnd);
 
         // Event Listener für Löschen
         deleteBtn.addEventListener('click', function () {
@@ -47,40 +42,27 @@ document.addEventListener('DOMContentLoaded', function () {
             newTaskDiv.classList.add('low-priority');
         }
 
+        // Event Listener für mobiles Verschieben (Tap zum Verschieben)
+        newTaskDiv.addEventListener('click', function () {
+            alert('Lange gedrückt halten, um zu verschieben');
+            this.classList.toggle('selected-task');
+        });
+
         return newTaskDiv;
     }
 
-    const tasks = document.querySelectorAll('.task-table div, .priority-table div, .pool-table div');
+    // Mobilgeräte: Drag & Drop-Alternative
     const dropzones = document.querySelectorAll('.task-table, .priority-table, .pool-table');
-
-    tasks.forEach(task => {
-        task.draggable = true;
-        task.addEventListener('dragstart', dragStart);
-        task.addEventListener('dragend', dragEnd);
-    });
+    let selectedTask = null;
 
     dropzones.forEach(zone => {
-        zone.addEventListener('dragover', dragOver);
-        zone.addEventListener('drop', dropTask);
+        zone.addEventListener('click', function (e) {
+            const selected = document.querySelector('.selected-task');
+            if (selected) {
+                zone.appendChild(selected);
+                selected.classList.remove('selected-task');
+                selectedTask = null;
+            }
+        });
     });
-
-    function dragStart(e) {
-        this.classList.add('dragging');
-        e.dataTransfer.setData('text/plain', e.target.textContent);
-    }
-
-    function dragEnd() {
-        this.classList.remove('dragging');
-    }
-
-    function dragOver(e) {
-        e.preventDefault();
-    }
-
-    function dropTask(e) {
-        e.preventDefault();
-        const taskText = e.dataTransfer.getData('text/plain');
-        const newTaskDiv = createTaskElement(taskText);
-        this.appendChild(newTaskDiv);
-    }
 });

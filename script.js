@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const newTaskDiv = createTaskElement(taskText);
             taskPool.appendChild(newTaskDiv);
             newTaskInput.value = '';
+            sortTasks(taskPool); // Sortiere nach Hinzufügen einer Aufgabe
         }
     });
 
@@ -33,16 +34,6 @@ document.addEventListener('DOMContentLoaded', function () {
         deleteBtn.addEventListener('click', function () {
             newTaskDiv.remove();
         });
-
-        // Priorität setzen (Optional)
-        const priority = prompt("Priorität eingeben: hoch, mittel, niedrig").toLowerCase();
-        if (priority === 'hoch') {
-            newTaskDiv.classList.add('high-priority');
-        } else if (priority === 'mittel') {
-            newTaskDiv.classList.add('medium-priority');
-        } else {
-            newTaskDiv.classList.add('low-priority');
-        }
 
         if (isMobile) {
             // Mobile: Tap and Move
@@ -84,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     zone.appendChild(selectedTask);
                     selectedTask.classList.remove('selected-task');
                     selectedTask = null;
+                    sortTasks(zone); // Sortiere nach Verschieben einer Aufgabe
                 }
             });
         }
@@ -98,5 +90,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const taskText = e.dataTransfer.getData('text/plain');
         const newTaskDiv = createTaskElement(taskText);
         this.appendChild(newTaskDiv);
+        sortTasks(this); // Sortiere nach Verschieben einer Aufgabe
+    }
+
+    function sortTasks(zone) {
+        const tasksArray = Array.from(zone.children);
+        tasksArray.sort((a, b) => a.textContent.localeCompare(b.textContent));
+        tasksArray.forEach(task => zone.appendChild(task));
     }
 });

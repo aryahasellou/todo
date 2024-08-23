@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
             taskPool.appendChild(newTaskDiv);
             newTaskInput.value = '';
             sortTasks(taskPool); // Sortiere nach Hinzufügen einer Aufgabe
+            addRotatingEmoji(newTaskDiv); // Füge Emoji-Animation hinzu
         }
     });
 
@@ -91,6 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const newTaskDiv = createTaskElement(taskText);
         this.appendChild(newTaskDiv);
         sortTasks(this); // Sortiere nach Verschieben einer Aufgabe
+        addRotatingEmoji(newTaskDiv); // Füge Emoji-Animation hinzu
     }
 
     function sortTasks(zone) {
@@ -98,4 +100,7 @@ document.addEventListener('DOMContentLoaded', function () {
         tasksArray.sort((a, b) => a.textContent.localeCompare(b.textContent));
         tasksArray.forEach(task => zone.appendChild(task));
     }
-});
+
+    function addRotatingEmoji(taskElement) {
+        const emojis = ['🍣', '🍜', '🇯🇵'];
+        const random

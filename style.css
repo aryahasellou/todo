@@ -1,0 +1,84 @@
+/* Allgemeines Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 2em;
+    color: #4A90E2;
+}
+
+h2 {
+    font-size: 1.5em;
+    color: #4A90E2;
+    margin-bottom: 10px;
+}
+
+/* Tabellen Styling */
+.task-table, .priority-table, .pool-table {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.task-lists {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.day-planner {
+    width: 48%;
+}
+
+.task-pool {
+    margin-top: 20px;
+}
+
+/* Animationen */
+.task-table div, .priority-table div, .pool-table div {
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #e0e4f1;
+    border-radius: 4px;
+    cursor: grab;
+    transition: transform 0.2s, background-color 0.3s;
+}
+
+.task-table div:hover, .priority-table div:hover, .pool-table div:hover {
+    transform: scale(1.02);
+    background-color: #d2d8ef;
+}
+
+.task-table div:active, .priority-table div:active, .pool-table div:active {
+    cursor: grabbing;
+}
+
+/* Flexibles Layout */
+@media (max-width: 768px) {
+    .task-lists {
+        flex-direction: column;
+    }
+
+    .day-planner {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+}

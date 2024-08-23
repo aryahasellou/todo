@@ -3,38 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-do-Liste für Arya und Aleyna</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Firebase SDK einbinden -->
-    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-database.js"></script>
+    <title>Meine To-Do Liste</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-database.js"></script>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>To-do-Liste für Arya und Aleyna</h1>
+            <h1>Meine To-Do Liste</h1>
         </header>
-        <main>
-            <div class="task-entry">
-                <input type="text" id="new-task" placeholder="Neue Aufgabe eingeben">
-                <button id="add-task">Hinzufügen</button>
-            </div>
-            <div class="task-lists">
-                <div class="day-planner">
-                    <h2>Arya's Tagesplan</h2>
-                    <div class="task-table" id="arya-tasks"></div>
-                </div>
-                <div class="day-planner">
-                    <h2>Aleyna's Tagesplan</h2>
-                    <div class="task-table" id="aleyna-tasks"></div>
-                </div>
-            </div>
-            <div class="task-pool">
-                <h2>Aufgabenpool</h2>
-                <div class="pool-table" id="task-pool"></div>
-            </div>
-        </main>
+        
+        <div class="task-entry">
+            <input type="text" id="new-task" placeholder="Neue Aufgabe hinzufügen...">
+            <button id="add-task">Hinzufügen</button>
+        </div>
+
+        <div class="task-lists">
+            <div id="task-pool" class="task-table">Task Pool</div>
+            <div id="arya-tasks" class="task-table">Arya's Tasks</div>
+            <div id="aleyna-tasks" class="task-table">Aleyna's Tasks</div>
+        </div>
     </div>
-    <script src="script.js"></script>
+
+    <script src="scripts/app.js"></script>
 </body>
 </html>

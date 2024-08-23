@@ -1,10 +1,11 @@
 /* Allgemeines Styling */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f0f0;
     color: #333;
     margin: 0;
     padding: 0;
+    user-select: none; /* Verhindert die Markierung von Text auf mobilen Geräten */
 }
 
 .container {
@@ -19,62 +20,46 @@ header {
 }
 
 h1 {
-    font-size: 2em;
+    font-size: 2.5em;
     color: #4A90E2;
+    animation: text-fade-in 1.5s ease-in-out;
 }
 
 h2 {
-    font-size: 1.5em;
+    font-size: 1.8em;
     color: #4A90E2;
     margin-bottom: 10px;
+    animation: text-fade-in 1.5s ease-in-out;
 }
 
-/* Tabellen Styling */
-.task-table, .priority-table, .pool-table {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    padding: 15px;
-    margin-bottom: 20px;
-}
-
-.task-lists {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.day-planner {
-    width: 48%;
-}
-
-.task-pool {
-    margin-top: 20px;
-}
-
+/* Eingabebereich */
 .task-entry {
     margin-bottom: 20px;
     display: flex;
     justify-content: center;
+    animation: slide-in-bottom 0.8s ease-in-out;
 }
 
 .task-entry input[type="text"] {
     padding: 10px;
     font-size: 1em;
-    width: 50%;
-    border-radius: 5px;
+    width: 60%;
+    border-radius: 10px;
     border: 1px solid #ccc;
     margin-right: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .task-entry button {
-    padding: 10px 15px;
+    padding: 10px 20px;
     font-size: 1em;
     background-color: #4A90E2;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
 }
 
 .task-entry button:hover {
@@ -86,21 +71,19 @@ h2 {
     padding: 10px;
     margin-bottom: 5px;
     background-color: #e0e4f1;
-    border-radius: 4px;
-    cursor: grab;
-    transition: transform 0.2s, background-color 0.3s;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.3s, box-shadow 0.3s ease-in-out;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .task-table div:hover, .priority-table div:hover, .pool-table div:hover {
-    transform: scale(1.02);
+    transform: scale(1.05);
     background-color: #d2d8ef;
-}
-
-.task-table div:active, .priority-table div:active, .pool-table div:active {
-    cursor: grabbing;
+    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.15);
 }
 
 /* Checkbox und Löschen-Button */
@@ -109,19 +92,16 @@ h2 {
 }
 
 .delete-btn {
-    background-color: red;
-    color: white;
+    background-color: transparent;
+    color: #FF6B6B;
     border: none;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    text-align: center;
+    font-size: 1.2em;
     cursor: pointer;
-    margin-left: 10px;
+    transition: transform 0.2s;
 }
 
 .delete-btn:hover {
-    background-color: darkred;
+    transform: rotate(180deg);
 }
 
 /* Prioritätsfarben */
@@ -137,6 +117,27 @@ h2 {
     background-color: #C8E6C9;
 }
 
+/* Animationen */
+@keyframes slide-in-bottom {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes text-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
 /* Flexibles Layout */
 @media (max-width: 768px) {
     .task-lists {
@@ -146,5 +147,10 @@ h2 {
     .day-planner {
         width: 100%;
         margin-bottom: 20px;
+    }
+
+    /* Anpassung für mobile Interaktion */
+    .task-table div, .priority-table div, .pool-table div {
+        cursor: pointer;
     }
 }

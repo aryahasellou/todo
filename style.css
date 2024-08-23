@@ -5,8 +5,7 @@ body {
     color: #333;
     margin: 0;
     padding: 0;
-    user-select: none;
-    transition: background-color 0.3s ease;
+    user-select: none; /* Verhindert die Markierung von Text auf mobilen Geräten */
 }
 
 .container {
@@ -112,6 +111,7 @@ h2 {
     animation: rotate 2s infinite linear;
 }
 
+/* Emojis, die erscheinen */
 .appearing-emoji {
     font-size: 1.5em;
     display: inline-block;
@@ -183,43 +183,26 @@ body.dark-mode {
     color: #f0f0f0;
 }
 
-body.dark-mode .task-table div, body.dark-mode .priority-table div, body.dark-mode .pool-table div {
+body.dark-mode .task-table div,
+body.dark-mode .priority-table div,
+body.dark-mode .pool-table div {
     background-color: #444;
     color: #f0f0f0;
 }
 
-body.dark-mode .task-entry input[type="text"], body.dark-mode .task-entry button {
+body.dark-mode .task-entry input[type="text"] {
     background-color: #666;
     color: #f0f0f0;
-    border: 1px solid #555;
 }
 
-/* XP-Leiste */
-.xp-bar {
-    display: flex;
-    margin: 20px 0;
+body.dark-mode .task-entry button {
+    background-color: #555;
 }
 
-.xp-bar-inner {
-    height: 20px;
-    border-radius: 10px;
-    background-color: #4A90E2;
-    width: 0;
-    transition: width 0.5s ease;
+body.dark-mode .task-entry button:hover {
+    background-color: #666;
 }
 
-/* Suchfeld Styling */
-.search-bar {
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: center;
-}
-
-.search-bar input[type="text"] {
-    padding: 10px;
-    font-size: 1em;
-    width: 60%;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    margin-right: 10px;
+button {
+    transition: background-color 0.3s ease;
 }

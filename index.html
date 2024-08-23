@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To-do-Liste für Arya und Aleyna</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Firebase SDK einbinden -->
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-database.js"></script>
 </head>
 <body>
     <div class="container">
@@ -19,28 +22,16 @@
             <div class="task-lists">
                 <div class="day-planner">
                     <h2>Arya's Tagesplan</h2>
-                    <div class="task-table" id="arya-tasks">
-                        <!-- Zeitplanung wird hier eingefügt -->
-                    </div>
+                    <div class="task-table" id="arya-tasks"></div>
                 </div>
                 <div class="day-planner">
                     <h2>Aleyna's Tagesplan</h2>
-                    <div class="task-table" id="aleyna-tasks">
-                        <!-- Zeitplanung wird hier eingefügt -->
-                    </div>
-                </div>
-            </div>
-            <div class="priority-section">
-                <h2>Wichtigste Prioritäten des Tages</h2>
-                <div class="priority-table" id="priorities">
-                    <!-- Prioritäten werden hier eingefügt -->
+                    <div class="task-table" id="aleyna-tasks"></div>
                 </div>
             </div>
             <div class="task-pool">
                 <h2>Aufgabenpool</h2>
-                <div class="pool-table" id="task-pool">
-                    <!-- Aufgabenpool wird hier eingefügt -->
-                </div>
+                <div class="pool-table" id="task-pool"></div>
             </div>
         </main>
     </div>

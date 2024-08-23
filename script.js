@@ -24,8 +24,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('search-input');
     const darkModeToggle = document.getElementById('toggle-darkmode');
     let selectedTask = null;
-    let aryaTaskCount = 0;
-    let aleynaTaskCount = 0;
 
     // Dark Mode
     darkModeToggle.addEventListener('click', function () {

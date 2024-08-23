@@ -1,18 +1,37 @@
+// Firebase-Konfiguration
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    databaseURL: "YOUR_DATABASE_URL",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+
+// Firebase initialisieren
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.database(app);
+
 document.addEventListener('DOMContentLoaded', function () {
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     const newTaskInput = document.getElementById('new-task');
     const addTaskButton = document.getElementById('add-task');
     const taskPool = document.getElementById('task-pool');
-    let selectedTask = null;
+    const aryaTasks = document.getElementById('arya-tasks');
+    const aleynaTasks = document.getElementById('aleyna-tasks');
+
+    // Aufgaben von Firebase laden
+    loadTasks('taskPool', taskPool);
+    loadTasks('aryaTasks', aryaTasks);
+    loadTasks('aleynaTasks', aleynaTasks);
 
     addTaskButton.addEventListener('click', function () {
         const taskText = newTaskInput.value.trim();
         if (taskText) {
             const newTaskDiv = createTaskElement(taskText);
             taskPool.appendChild(newTaskDiv);
+            saveTask('taskPool', taskText); // Speichere die Aufgabe in Firebase
             newTaskInput.value = '';
-            sortTasks(taskPool); // Sortiere nach Hinzufügen einer Aufgabe
-            addRotatingEmoji(newTaskDiv); // Füge Emoji-Animation hinzu
         }
     });
 
@@ -36,8 +55,8 @@ document.addEventListener('DOMContentLoaded', function () {
             newTaskDiv.remove();
         });
 
+        // Mobile: Tap and Move
         if (isMobile) {
-            // Mobile: Tap and Move
             newTaskDiv.addEventListener('click', function () {
                 if (selectedTask) {
                     selectedTask.classList.remove('selected-task');
@@ -65,10 +84,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const dropzones = document.querySelectorAll('.task-table, .priority-table, .pool-table');
-    
+
     dropzones.forEach(zone => {
         zone.addEventListener('dragover', dragOver);
-        zone.addEventListener('drop', dropTask);
+        zone.addEventListener('drop', function (e) {
+            dropTask(e, zone.id);
+        });
 
         if (isMobile) {
             zone.addEventListener('click', function () {
@@ -76,7 +97,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     zone.appendChild(selectedTask);
                     selectedTask.classList.remove('selected-task');
                     selectedTask = null;
-                    sortTasks(zone); // Sortiere nach Verschieben einer Aufgabe
                 }
             });
         }
@@ -86,27 +106,27 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
     }
 
-    function dropTask(e) {
+    function dropTask(e, zoneId) {
         e.preventDefault();
         const taskText = e.dataTransfer.getData('text/plain');
         const newTaskDiv = createTaskElement(taskText);
-        this.appendChild(newTaskDiv);
-        sortTasks(this); // Sortiere nach Verschieben einer Aufgabe
-        addRotatingEmoji(newTaskDiv); // Füge Emoji-Animation hinzu
+        document.getElementById(zoneId).appendChild(newTaskDiv);
+        saveTask(zoneId, taskText); // Speichere die Aufgabe in Firebase
     }
 
-    function sortTasks(zone) {
-        const tasksArray = Array.from(zone.children);
-        tasksArray.sort((a, b) => a.textContent.localeCompare(b.textContent));
-        tasksArray.forEach(task => zone.appendChild(task));
+    // Aufgabe in Firebase speichern
+    function saveTask(zone, taskText) {
+        const tasksRef = db.ref(zone);
+        tasksRef.push(taskText);
     }
 
-    function addRotatingEmoji(taskElement) {
-        const emojis = ['🍣', '🍜', '🇯🇵'];
-        const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-        const emojiSpan = document.createElement('span');
-        emojiSpan.textContent = randomEmoji;
-        emojiSpan.classList.add('rotating-emoji');
-        taskElement.appendChild(emojiSpan);
+    // Aufgaben aus Firebase laden
+    function loadTasks(zone, element) {
+        const tasksRef = db.ref(zone);
+        tasksRef.on('child_added', function(snapshot) {
+            const taskText = snapshot.val();
+            const newTaskDiv = createTaskElement(taskText);
+            element.appendChild(newTaskDiv);
+        });
     }
 });

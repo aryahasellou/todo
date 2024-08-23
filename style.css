@@ -5,7 +5,8 @@ body {
     color: #333;
     margin: 0;
     padding: 0;
-    user-select: none; /* Verhindert die Markierung von Text auf mobilen Geräten */
+    user-select: none;
+    transition: background-color 0.3s ease;
 }
 
 .container {
@@ -191,4 +192,34 @@ body.dark-mode .task-entry input[type="text"], body.dark-mode .task-entry button
     background-color: #666;
     color: #f0f0f0;
     border: 1px solid #555;
+}
+
+/* XP-Leiste */
+.xp-bar {
+    display: flex;
+    margin: 20px 0;
+}
+
+.xp-bar-inner {
+    height: 20px;
+    border-radius: 10px;
+    background-color: #4A90E2;
+    width: 0;
+    transition: width 0.5s ease;
+}
+
+/* Suchfeld Styling */
+.search-bar {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.search-bar input[type="text"] {
+    padding: 10px;
+    font-size: 1em;
+    width: 60%;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
 }

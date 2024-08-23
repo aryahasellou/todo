@@ -52,7 +52,36 @@ h2 {
     margin-top: 20px;
 }
 
-/* Animationen */
+.task-entry {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.task-entry input[type="text"] {
+    padding: 10px;
+    font-size: 1em;
+    width: 50%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+}
+
+.task-entry button {
+    padding: 10px 15px;
+    font-size: 1em;
+    background-color: #4A90E2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.task-entry button:hover {
+    background-color: #357ABD;
+}
+
+/* Aufgaben-Elemente */
 .task-table div, .priority-table div, .pool-table div {
     padding: 10px;
     margin-bottom: 5px;
@@ -60,6 +89,9 @@ h2 {
     border-radius: 4px;
     cursor: grab;
     transition: transform 0.2s, background-color 0.3s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .task-table div:hover, .priority-table div:hover, .pool-table div:hover {
@@ -69,6 +101,40 @@ h2 {
 
 .task-table div:active, .priority-table div:active, .pool-table div:active {
     cursor: grabbing;
+}
+
+/* Checkbox und Löschen-Button */
+.task-table input[type="checkbox"], .priority-table input[type="checkbox"], .pool-table input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.delete-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.delete-btn:hover {
+    background-color: darkred;
+}
+
+/* Prioritätsfarben */
+.high-priority {
+    background-color: #FFCDD2;
+}
+
+.medium-priority {
+    background-color: #FFF9C4;
+}
+
+.low-priority {
+    background-color: #C8E6C9;
 }
 
 /* Flexibles Layout */

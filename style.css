@@ -12,8 +12,11 @@ body {
     width: 90%;
     max-width: 1200px;
     margin: 20px auto;
+    display: flex;
+    justify-content: space-between;
 }
 
+/* Header Styling */
 header {
     text-align: center;
     margin-bottom: 20px;
@@ -67,10 +70,14 @@ h2 {
 }
 
 /* Aufgaben-Elemente */
+.task-table, .priority-table, .pool-table {
+    width: 100%;
+    padding: 10px;
+}
+
 .task-table div, .priority-table div, .pool-table div {
     padding: 10px;
     margin-bottom: 5px;
-    background-color: #e0e4f1;
     border-radius: 8px;
     cursor: pointer;
     transition: transform 0.2s, background-color 0.3s, box-shadow 0.3s ease-in-out;
@@ -81,6 +88,20 @@ h2 {
     animation: slide-in-bottom 0.5s ease-in-out;
 }
 
+/* Farbliche Gestaltung für Arya und Aleyna */
+#arya-tasks {
+    background-color: #d4edda; /* Grün */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+#aleyna-tasks {
+    background-color: #f8d7da; /* Pink */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Aufgabenbereich Animationen */
 .task-table div:hover, .priority-table div:hover, .pool-table div:hover {
     transform: scale(1.05);
     background-color: #d2d8ef;
@@ -111,12 +132,59 @@ h2 {
     animation: rotate 2s infinite linear;
 }
 
-/* Emojis, die erscheinen */
 .appearing-emoji {
     font-size: 1.5em;
     display: inline-block;
     margin-left: 10px;
     animation: appear 0.5s ease-in-out;
+}
+
+/* Neue Animationen */
+@keyframes ramen-sushi {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes rocket-firework {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+/* Animationen für abgeschlossene Aufgaben */
+.completed-task {
+    animation: ramen-sushi 1s ease-out;
+}
+
+.completed-task-rocket {
+    position: relative;
+    animation: rocket-firework 2s ease-out;
+}
+
+.completed-task-rocket::before {
+    content: '🚀🎉';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2em;
+    opacity: 0;
+    animation: rocket-firework 1s ease-out;
 }
 
 /* Keyframe-Animationen */
@@ -162,6 +230,10 @@ h2 {
 
 /* Flexibles Layout */
 @media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
     .task-lists {
         flex-direction: column;
     }

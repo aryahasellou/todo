@@ -19,55 +19,151 @@ document.addEventListener('DOMContentLoaded', function () {
     const taskPool = document.getElementById('task-pool');
     const aryaTasks = document.getElementById('arya-tasks');
     const aleynaTasks = document.getElementById('aleyna-tasks');
-    const taskSearch = document.getElementById('task-search');
-    const darkModeSwitch = document.getElementById('dark-mode-switch');
+    const aryaXpBar = document.getElementById('arya-xp-bar').querySelector('span');
+    const aleynaXpBar = document.getElementById('aleyna-xp-bar').querySelector('span');
+    const searchInput = document.getElementById('search-input');
+    const darkModeToggle = document.getElementById('toggle-darkmode');
+    let selectedTask = null;
+    let aryaTaskCount = 0;
+    let aleynaTaskCount = 0;
 
-    // Funktionen zum Erstellen von Aufgaben-Elementen
-    function createTaskElement(taskText) {
-        const taskDiv = document.createElement('div');
-        taskDiv.textContent = taskText;
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = '❌';
-        deleteBtn.className = 'delete-btn';
-        deleteBtn.addEventListener('click', () => {
-            taskDiv.remove();
-            saveTasksToLocal('taskPool');
-            removeTaskFromFirebase(taskDiv);
+    // Dark Mode
+    darkModeToggle.addEventListener('click', function () {
+        document.body.classList.toggle('dark-mode');
+        darkModeToggle.textContent = document.body.classList.contains('dark-mode') ? '🌞' : '🌙';
+    });
+
+    // Suche
+    searchInput.addEventListener('input', function () {
+        const searchValue = this.value.toLowerCase();
+        document.querySelectorAll('.task-table div').forEach(taskDiv => {
+            const taskText = taskDiv.textContent.toLowerCase();
+            taskDiv.style.display = taskText.includes(searchValue) ? 'flex' : 'none';
         });
-        taskDiv.appendChild(deleteBtn);
-        return taskDiv;
-    }
+    });
 
-    // Aufgaben hinzufügen
+    // Aufgaben von Firebase laden
+    loadTasks('taskPool', taskPool);
+    loadTasks('aryaTasks', aryaTasks);
+    loadTasks('aleynaTasks', aleynaTasks);
+
     addTaskButton.addEventListener('click', function () {
         const taskText = newTaskInput.value.trim();
         if (taskText) {
-            const taskDiv = createTaskElement(taskText);
-            taskPool.appendChild(taskDiv);
+            const newTaskDiv = createTaskElement(taskText);
+            taskPool.appendChild(newTaskDiv);
+            saveTask('taskPool', taskText); // Speichere die Aufgabe in Firebase
             newTaskInput.value = '';
-            saveTasksToLocal('taskPool');
-            saveTask('taskPool', taskText);
         }
     });
 
-    // Aufgaben aus Firebase laden
-    function loadTasksFromFirebase(zoneId) {
-        const tasksRef = db.ref(zoneId);
-        tasksRef.on('child_added', function(snapshot) {
-            const taskText = snapshot.val();
-            const taskDiv = createTaskElement(taskText);
-            document.getElementById(zoneId).appendChild(taskDiv);
+    function createTaskElement(taskText) {
+        const newTaskDiv = document.createElement('div');
+        newTaskDiv.textContent = taskText;
+
+        // Checkbox zum Markieren
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        newTaskDiv.prepend(checkbox);
+
+        // Löschen-Button als Icon
+        const deleteBtn = document.createElement('span');
+        deleteBtn.textContent = '❌';
+        deleteBtn.classList.add('delete-btn');
+        newTaskDiv.appendChild(deleteBtn);
+
+        // Event Listener für Löschen
+        deleteBtn.addEventListener('click', function () {
+            newTaskDiv.remove();
+            removeTaskFromFirebase(newTaskDiv); // Entferne die Aufgabe auch aus Firebase
+            updateXp();
+        });
+
+        // Event Listener für Checkbox
+        checkbox.addEventListener('change', function () {
+            if (this.checked) {
+                newTaskDiv.classList.add('completed');
+                showConfetti();
+                updateXp();
+            } else {
+                newTaskDiv.classList.remove('completed');
+            }
+        });
+
+        // Mobile: Tap and Move
+        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+            newTaskDiv.addEventListener('click', function () {
+                if (selectedTask) {
+                    selectedTask.classList.remove('selected-task');
+                }
+                selectedTask = this;
+                this.classList.add('selected-task');
+            });
+        } else {
+            // Desktop: Drag and Drop
+            newTaskDiv.draggable = true;
+            newTaskDiv.addEventListener('dragstart', dragStart);
+            newTaskDiv.addEventListener('dragend', dragEnd);
+        }
+
+        return newTaskDiv;
+    }
+
+    function dragStart(e) {
+        this.classList.add('dragging');
+        e.dataTransfer.setData('text/plain', this.textContent);
+    }
+
+    function dragEnd() {
+        this.classList.remove('dragging');
+    }
+
+    const dropzones = document.querySelectorAll('.task-table');
+
+    dropzones.forEach(zone => {
+        zone.addEventListener('dragover', dragOver);
+        zone.addEventListener('drop', function (e) {
+            dropTask(e, zone.id);
+        });
+
+        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+            zone.addEventListener('click', function () {
+                if (selectedTask) {
+                    zone.appendChild(selectedTask);
+                    selectedTask.classList.remove('selected-task');
+                    saveTask(zone.id, selectedTask.textContent); // Speichere die Aufgabe in Firebase
+                    selectedTask = null;
+                }
+            });
+        }
+    });
+
+    function dragOver(e) {
+        e.preventDefault();
+    }
+
+    function dropTask(e, zoneId) {
+        e.preventDefault();
+        const taskText = e.dataTransfer.getData('text/plain');
+        const newTaskDiv = createTaskElement(taskText);
+        document.getElementById(zoneId).appendChild(newTaskDiv);
+        saveTask(zoneId, taskText); // Speichere die Aufgabe in Firebase
+        updateXp();
+    }
+
+    // Aufgabe in Firebase speichern
+    function saveTask(zone, taskText) {
+        const tasksRef = db.ref(zone);
+        tasksRef.push(taskText, (error) => {
+            if (error) {
+                console.error("Fehler beim Speichern der Aufgabe:", error);
+            } else {
+                console.log("Aufgabe erfolgreich gespeichert.");
+            }
         });
     }
 
-    // Aufgaben in Firebase speichern
-    function saveTask(zone, taskText) {
-        const tasksRef = db.ref(zone);
-        tasksRef.push(taskText);
-        saveTasksToLocal(zone);
-    }
-
-    // Aufgaben aus Firebase entfernen
+    // Aufgabe aus Firebase entfernen
     function removeTaskFromFirebase(taskElement) {
         const taskText = taskElement.textContent.replace('❌', '').trim();
         const zoneId = taskElement.parentElement.id;
@@ -79,120 +175,43 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         });
-        saveTasksToLocal(zoneId);
     }
 
-    // Aufgaben in LocalStorage speichern
-    function saveTasksToLocal(zoneId) {
-        const tasks = [];
-        document.querySelectorAll(`#${zoneId} div`).forEach(task => {
-            tasks.push(task.textContent.replace('❌', '').trim());
-        });
-        localStorage.setItem(zoneId, JSON.stringify(tasks));
-    }
-
-    // Aufgaben aus LocalStorage laden
-    function loadTasksFromLocal(zoneId) {
-        const tasks = JSON.parse(localStorage.getItem(zoneId)) || [];
-        tasks.forEach(taskText => {
+    // Aufgaben aus Firebase laden
+    function loadTasks(zone, element) {
+        const tasksRef = db.ref(zone);
+        tasksRef.on('child_added', function(snapshot) {
+            const taskText = snapshot.val();
             const newTaskDiv = createTaskElement(taskText);
-            document.getElementById(zoneId).appendChild(newTaskDiv);
+            element.appendChild(newTaskDiv);
         });
     }
-
-    // Suchfunktion
-    taskSearch.addEventListener('input', function () {
-        const filter = taskSearch.value.toLowerCase();
-        const tasks = document.querySelectorAll('.task-table div');
-        tasks.forEach(task => {
-            if (task.textContent.toLowerCase().includes(filter)) {
-                task.style.display = '';
-            } else {
-                task.style.display = 'none';
-            }
-        });
-    });
-
-    // Dark Mode umschalten
-    darkModeSwitch.addEventListener('change', function () {
-        document.body.classList.toggle('dark-mode');
-    });
 
     // XP-Leiste aktualisieren
-    let aryaXp = 0;
-    let aleynaXp = 0;
-    const xpIncrement = 20; // Pro abgeschlossener Aufgabe
-    const maxXp = 100; // Maximalwert der XP
+    function updateXp() {
+        const aryaTasksCount = aryaTasks.querySelectorAll('div.completed').length;
+        const aleynaTasksCount = aleynaTasks.querySelectorAll('div.completed').length;
 
-    function updateXpBar(zoneId, xpValue) {
-        const xpBar = document.getElementById(`${zoneId}`);
-        xpBar.style.width = `${xpValue}%`;
-        if (xpValue >= 100) {
-            celebrateFullXp(zoneId);
+        aryaXpBar.style.width = `${(aryaTasksCount / 10) * 100}%`; // Beispiel: 10 Aufgaben für Vollständigkeit
+        aleynaXpBar.style.width = `${(aleynaTasksCount / 10) * 100}%`; // Beispiel: 10 Aufgaben für Vollständigkeit
+
+        if (aryaTasksCount === aryaTasks.children.length) {
+            showConfetti();
+        }
+
+        if (aleynaTasksCount === aleynaTasks.children.length) {
+            showConfetti();
         }
     }
 
-    function celebrateFullXp(zoneId) {
-        showConfetti();
-        document.getElementById(zoneId).style.backgroundColor = zoneId === 'arya-xp-bar' ? 'green' : 'pink';
+    // Konfetti und Rakete anzeigen
+    function showConfetti() {
+        const confetti = document.createElement('div');
+        confetti.innerHTML = '🎉🚀';
+        confetti.classList.add('appearing-emoji');
+        document.body.appendChild(confetti);
         setTimeout(() => {
-            document.getElementById(zoneId).style.backgroundColor = '';
+            confetti.remove();
         }, 3000);
     }
-
-    // Emojis für Konfetti und Rakete
-    function showConfetti() {
-        const confettiEmoji = '🎉';
-        document.body.insertAdjacentHTML('beforeend', `<div class="confetti">${confettiEmoji.repeat(10)}</div>`);
-        setTimeout(() => document.querySelector('.confetti').remove(), 3000);
-    }
-
-    function launchRocket() {
-        const rocketEmoji = '🚀';
-        document.body.insertAdjacentHTML('beforeend', `<div class="rocket">${rocketEmoji}</div>`);
-        setTimeout(() => document.querySelector('.rocket').remove(), 3000);
-    }
-
-    // Überprüfen, ob eine Feier ausgelöst werden soll
-    let completedTasks = 0;
-    let lastTaskTime = Date.now();
-
-    function checkForCelebration() {
-        const currentTime = Date.now();
-        if (currentTime - lastTaskTime < 5000) { // 5 Sekunden Zeitfenster
-            completedTasks++;
-            if (completedTasks >= 3) { // z.B. bei 3 schnell hintereinander abgehakten Aufgaben
-                launchRocket();
-                showConfetti();
-                completedTasks = 0; // Zurücksetzen
-            }
-        } else {
-            completedTasks = 1;
-        }
-        lastTaskTime = currentTime;
-    }
-
-    // Aufgabenstatus überprüfen und XP-Leiste aktualisieren
-    document.querySelectorAll('.task-table input[type="checkbox"]').forEach(checkbox => {
-        checkbox.addEventListener('change', function () {
-            if (this.checked) {
-                if (this.parentElement.parentElement.id === 'arya-tasks') {
-                    aryaXp += xpIncrement;
-                    updateXpBar('arya-xp-bar', aryaXp);
-                } else if (this.parentElement.parentElement.id === 'aleyna-tasks') {
-                    aleynaXp += xpIncrement;
-                    updateXpBar('aleyna-xp-bar', aleynaXp);
-                }
-                checkForCelebration();
-            }
-        });
-    });
-
-    // Initiale Aufgaben laden
-    loadTasksFromLocal('taskPool');
-    loadTasksFromLocal('arya-tasks');
-    loadTasksFromLocal('aleyna-tasks');
-    loadTasksFromFirebase('taskPool');
-    loadTasksFromFirebase('arya-tasks');
-    loadTasksFromFirebase('aleyna-tasks');
 });

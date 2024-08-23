@@ -4,18 +4,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskPool = document.getElementById('task-pool');
     const aryaTasks = document.getElementById('arya-tasks');
     const aleynaTasks = document.getElementById('aleyna-tasks');
-    let completedTasksCount = 0;
     let selectedTask = null;
+    let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
     // Aufgaben von Firebase laden
-    ['taskPool', 'aryaTasks', 'aleynaTasks'].forEach(zone => loadTasks(zone, document.getElementById(zone)));
+    loadTasks('taskPool', taskPool);
+    loadTasks('aryaTasks', aryaTasks);
+    loadTasks('aleynaTasks', aleynaTasks);
 
     addTaskButton.addEventListener('click', () => {
         const taskText = newTaskInput.value.trim();
         if (taskText) {
             const newTaskDiv = createTaskElement(taskText);
             taskPool.appendChild(newTaskDiv);
-            saveTask('taskPool', taskText); // Speichere die Aufgabe in Firebase
+            saveTask('taskPool', taskText);
             newTaskInput.value = '';
         }
     });
@@ -38,45 +40,99 @@ document.addEventListener('DOMContentLoaded', () => {
         // Event Listener für Löschen
         deleteBtn.addEventListener('click', () => {
             newTaskDiv.remove();
-            removeTaskFromFirebase(newTaskDiv); // Entferne die Aufgabe auch aus Firebase
+            removeTaskFromFirebase(newTaskDiv);
         });
 
-        // Event Listener für das Abhaken der Aufgabe
-        checkbox.addEventListener('change', () => {
-            if (checkbox.checked) {
-                completedTasksCount++;
-                newTaskDiv.classList.add('completed-task');
-                
-                if (completedTasksCount >= 3) {
-                    displayFireworks();
-                    completedTasksCount = 0; // Zurücksetzen des Zählers
+        if (isMobile) {
+            // Mobilgeräte: Tap and Move
+            newTaskDiv.addEventListener('click', () => {
+                if (selectedTask) {
+                    selectedTask.classList.remove('selected-task');
                 }
-            } else {
-                completedTasksCount--;
-                newTaskDiv.classList.remove('completed-task');
-            }
-        });
+                selectedTask = newTaskDiv;
+                newTaskDiv.classList.add('selected-task');
+            });
+        } else {
+            // Desktop: Drag and Drop
+            newTaskDiv.draggable = true;
+            newTaskDiv.addEventListener('dragstart', dragStart);
+            newTaskDiv.addEventListener('dragend', dragEnd);
+        }
 
         return newTaskDiv;
     }
 
-    function displayFireworks() {
-        const fireworks = document.createElement('div');
-        fireworks.classList.add('completed-task-rocket');
-        fireworks.innerHTML = '🚀🎉';
-        document.body.appendChild(fireworks);
-        setTimeout(() => fireworks.remove(), 2000); // Entferne das Feuerwerk nach 2 Sekunden
+    function dragStart(e) {
+        this.classList.add('dragging');
+        e.dataTransfer.setData('text/plain', this.textContent);
+        setTimeout(() => this.style.visibility = 'hidden', 0); // Verstecke das Element während des Drag
     }
 
-    function loadTasks(zone, element) {
-        // Placeholder für die Funktion, die Aufgaben von Firebase lädt
+    function dragEnd(e) {
+        this.classList.remove('dragging');
+        this.style.visibility = 'visible';
     }
 
+    const dropzones = document.querySelectorAll('.task-table, .priority-table, .pool-table');
+
+    dropzones.forEach(zone => {
+        zone.addEventListener('dragover', dragOver);
+        zone.addEventListener('drop', e => {
+            dropTask(e, zone.id);
+        });
+
+        if (isMobile) {
+            // Mobile: Tap to Move
+            zone.addEventListener('click', () => {
+                if (selectedTask) {
+                    zone.appendChild(selectedTask);
+                    selectedTask.classList.remove('selected-task');
+                    saveTask(zone.id, selectedTask.textContent);
+                    selectedTask = null;
+                }
+            });
+        }
+    });
+
+    function dragOver(e) {
+        e.preventDefault();
+    }
+
+    function dropTask(e, zoneId) {
+        e.preventDefault();
+        const taskText = e.dataTransfer.getData('text/plain');
+        const newTaskDiv = createTaskElement(taskText);
+        document.getElementById(zoneId).appendChild(newTaskDiv);
+        saveTask(zoneId, taskText);
+    }
+
+    // Aufgabe in Firebase speichern
     function saveTask(zone, taskText) {
-        // Placeholder für die Funktion, die Aufgaben in Firebase speichert
+        const tasksRef = db.ref(zone);
+        tasksRef.push(taskText);
     }
 
-    function removeTaskFromFirebase(taskDiv) {
-        // Placeholder für die Funktion, die Aufgaben aus Firebase entfernt
+    // Aufgabe aus Firebase entfernen
+    function removeTaskFromFirebase(taskElement) {
+        const taskText = taskElement.textContent.replace('❌', '').trim();
+        const zoneId = taskElement.parentElement.id;
+        const tasksRef = db.ref(zoneId);
+        tasksRef.once('value', snapshot => {
+            snapshot.forEach(childSnapshot => {
+                if (childSnapshot.val() === taskText) {
+                    tasksRef.child(childSnapshot.key).remove();
+                }
+            });
+        });
+    }
+
+    // Aufgaben aus Firebase laden
+    function loadTasks(zone, element) {
+        const tasksRef = db.ref(zone);
+        tasksRef.on('child_added', snapshot => {
+            const taskText = snapshot.val();
+            const newTaskDiv = createTaskElement(taskText);
+            element.appendChild(newTaskDiv);
+        });
     }
 });

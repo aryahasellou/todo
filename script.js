@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
             updateXP(newTaskDiv); // Aktualisiere die XP-Leiste
         });
 
-        // Event Listener für Checkbox
+        // Event Listener für Aufgabe abhaken
         checkbox.addEventListener('change', function () {
             if (checkbox.checked) {
                 newTaskDiv.classList.add('completed');
